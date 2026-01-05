@@ -19,16 +19,26 @@ export async function getProducts(storeId, categoryId, search) {
 
 // Helper for fetch with credentials
 async function fetchWithAuth(url, options = {}) {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const token = user?.token;
+
     const defaultOptions = {
-        credentials: "include", // Important for cookies
+        credentials: "include", // Keep cookies as fallback or for other needs
     };
+
+    const headers = {
+        "Content-Type": "application/json",
+        ...options.headers,
+    };
+
+    if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+    }
+
     const response = await fetch(`${API_URL}${url}`, {
         ...defaultOptions,
         ...options,
-        headers: {
-            "Content-Type": "application/json",
-            ...options.headers,
-        },
+        headers,
     });
     if (response.status === 401) {
         // Could handle global redirect here or throw specific error

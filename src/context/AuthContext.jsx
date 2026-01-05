@@ -23,9 +23,16 @@ export function AuthProvider({ children }) {
 
     async function checkAuth() {
         try {
+            // Need token to call getProfile, so it must be in localStorage already
+            const stored = JSON.parse(localStorage.getItem("user"));
+            if (!stored?.token) throw new Error("No token");
+
             const userData = await getProfile();
-            setUser(userData);
-            localStorage.setItem("user", JSON.stringify(userData)); // Sync fresh data
+            // Important: getProfile returns only user info, so we must preserve the token
+            const updatedUser = { ...userData, token: stored.token };
+
+            setUser(updatedUser);
+            localStorage.setItem("user", JSON.stringify(updatedUser));
         } catch (error) {
             console.error("Auth check failed", error);
             setUser(null);
@@ -37,7 +44,9 @@ export function AuthProvider({ children }) {
 
     async function login(email, password) {
         const data = await apiLogin(email, password);
-        const userData = data.user;
+        // data has { user: {...}, token: "..." }
+        // We merge them so we can store the token easily
+        const userData = { ...data.user, token: data.token };
         setUser(userData);
         localStorage.setItem("user", JSON.stringify(userData));
         return data;
