@@ -1,19 +1,11 @@
 const API_URL = "http://localhost:8000";
 
 export async function checkPincode(pincode) {
-    const response = await fetch(`${API_URL}/stores/by-pincode/${pincode}`);
-    if (!response.ok) {
-        throw new Error("Service not available");
-    }
-    return response.json();
+    return fetchWithAuth(`/stores/by-pincode/${pincode}`);
 }
 
 export async function checkLocation(lat, long) {
-    const response = await fetch(`${API_URL}/check-location?lat=${lat}&long=${long}`);
-    if (!response.ok) {
-        throw new Error("Service not available");
-    }
-    return response.json();
+    return fetchWithAuth(`/stores/check-location?lat=${lat}&long=${long}`);
 }
 
 export async function getProducts(storeId, categoryId, search) {
@@ -22,11 +14,7 @@ export async function getProducts(storeId, categoryId, search) {
     if (categoryId) params.append("category_id", categoryId);
     if (search) params.append("search", search);
 
-    const response = await fetch(`${API_URL}/products/?${params.toString()}`);
-    if (!response.ok) {
-        throw new Error("Failed to fetch products");
-    }
-    return response.json();
+    return fetchWithAuth(`/products/?${params.toString()}`);
 }
 
 // Helper for fetch with credentials
@@ -127,7 +115,26 @@ export async function getOrders() {
 }
 
 export async function getPincodes() {
-    const response = await fetch(`${API_URL}/stores/pincodes`);
-    if (!response.ok) throw new Error("Failed to fetch pincodes");
-    return response.json();
+    return fetchWithAuth("/stores/pincodes");
+}
+
+export async function createUser(userData) {
+    return fetchWithAuth("/admin/create-user", {
+        method: "POST",
+        body: JSON.stringify(userData),
+    });
+}
+
+export async function resetPasswordAdmin(data) {
+    return fetchWithAuth("/admin/reset-password", {
+        method: "POST",
+        body: JSON.stringify(data),
+    });
+}
+
+export async function changePasswordUser(data) {
+    return fetchWithAuth("/auth/change-password", {
+        method: "POST",
+        body: JSON.stringify(data),
+    });
 }

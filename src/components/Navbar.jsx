@@ -2,6 +2,7 @@ import { Search, ShoppingCart, User, ChevronDown, MapPin, LogOut, UserCircle, Pa
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useCart } from "@/context/CartContext"
+import { useAuth } from "@/context/AuthContext"
 import { Link, useNavigate } from "react-router-dom"
 import {
     DropdownMenu,
@@ -16,35 +17,13 @@ import { useState, useEffect } from "react"
 export function Navbar({ location, onLocationClick, onCartClick }) {
     const { cart } = useCart()
     const navigate = useNavigate()
-    const [user, setUser] = useState(null)
+    const { user, logout } = useAuth()
 
     const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0)
     const cartTotal = cart.reduce((acc, item) => acc + (item.selling_price_with_gst || item.price || 0) * item.quantity, 0)
 
-    useEffect(() => {
-        const checkUser = () => {
-            const savedUser = localStorage.getItem("user")
-            if (savedUser) {
-                setUser(JSON.parse(savedUser))
-            } else {
-                setUser(null)
-            }
-        }
-
-        checkUser()
-        window.addEventListener('login-success', checkUser)
-        window.addEventListener('storage', checkUser)
-
-        return () => {
-            window.removeEventListener('login-success', checkUser)
-            window.removeEventListener('storage', checkUser)
-        }
-    }, [])
-
-    const handleLogout = () => {
-        localStorage.removeItem("user")
-        localStorage.removeItem("token")
-        setUser(null)
+    const handleLogout = async () => {
+        await logout()
         navigate("/")
     }
 
@@ -122,7 +101,24 @@ export function Navbar({ location, onLocationClick, onCartClick }) {
                                     <HelpCircle className="mr-2 h-4 w-4" />
                                     <span>Help Center</span>
                                 </DropdownMenuItem>
+                                {user?.role === 'admin' && (
+                                    <>
+                                        <DropdownMenuSeparator />
+                                        <DropdownMenuItem onClick={() => navigate("/admin/create-user")}>
+                                            <UserCircle className="mr-2 h-4 w-4" />
+                                            <span>Create User Account</span>
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem onClick={() => navigate("/admin/reset-password")}>
+                                            <UserCircle className="mr-2 h-4 w-4" />
+                                            <span>Reset User Password</span>
+                                        </DropdownMenuItem>
+                                    </>
+                                )}
                                 <DropdownMenuSeparator />
+                                <DropdownMenuItem onClick={() => navigate("/change-password")}>
+                                    <UserCircle className="mr-2 h-4 w-4" />
+                                    <span>Change Password</span>
+                                </DropdownMenuItem>
                                 <DropdownMenuItem onClick={handleLogout} className="text-red-600">
                                     <LogOut className="mr-2 h-4 w-4" />
                                     <span>Logout</span>

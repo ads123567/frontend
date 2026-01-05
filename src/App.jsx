@@ -7,6 +7,9 @@ import { Checkout } from './pages/Checkout'
 import Login from './pages/Login'
 import { Profile } from './pages/Profile'
 import ProtectedRoute from './components/ProtectedRoute'
+import CreateUser from './pages/admin/CreateUser'
+import ResetPassword from './pages/admin/ResetPassword'
+import ChangePassword from './pages/ChangePassword'
 import { Toaster, toast } from 'sonner'
 
 // Pages
@@ -75,7 +78,24 @@ function AppContent() {
           <Route path="/support" element={<Support />} />
           <Route path="/contact" element={<Contact />} />
 
+          {/* Admin Routes */}
+          <Route path="/admin/create-user" element={
+            <ProtectedRoute>
+              <CreateUser />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/reset-password" element={
+            <ProtectedRoute>
+              <ResetPassword />
+            </ProtectedRoute>
+          } />
+
           {/* Protected Routes */}
+          <Route path="/change-password" element={
+            <ProtectedRoute>
+              <ChangePassword />
+            </ProtectedRoute>
+          } />
           <Route
             path="/"
             element={
