@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
 import { useCart } from "@/context/CartContext"
@@ -5,8 +6,14 @@ import { useNavigate } from 'react-router-dom'
 import { Minus, Plus, Trash2 } from "lucide-react"
 
 export function CartDrawer({ open, onOpenChange }) {
-    const { cart, updateQuantity, removeFromCart } = useCart()
+    const { cart, updateQuantity, removeFromCart, refreshCart } = useCart()
     const navigate = useNavigate()
+
+    useEffect(() => {
+        if (open && refreshCart) {
+            refreshCart()
+        }
+    }, [open, refreshCart])
 
     const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0)
 

@@ -1,18 +1,20 @@
 import { useState, useEffect } from "react"
-import { useSearchParams } from "react-router-dom"
+import { useNavigate, useSearchParams } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
-import { User, Store, FileText, Phone, Mail, Edit2, MapPin, Package, Plus, HelpCircle, LogOut } from "lucide-react"
+import { User, Store, FileText, Phone, Mail, Edit2, MapPin, Package, Plus, HelpCircle, LogOut, Lock } from "lucide-react"
 import { getAddresses, addAddress, getOrders, getPincodes } from "@/api"
+import { useAuth } from "@/context/AuthContext"
 
 export function Profile() {
     const [searchParams] = useSearchParams()
+    const navigate = useNavigate()
+    const { user: authUser, loading: authLoading, logout } = useAuth()
     const [activeTab, setActiveTab] = useState(searchParams.get("tab") || "profile")
     const [user, setUser] = useState(null)
-    const [token, setToken] = useState(null)
 
     // Data states
     const [addresses, setAddresses] = useState([])
@@ -47,39 +49,35 @@ export function Profile() {
     }, [searchParams])
 
     useEffect(() => {
-        const savedUser = localStorage.getItem("user")
-        const savedToken = localStorage.getItem("token") || "mock-token"
-        if (savedUser) {
-            const parsed = JSON.parse(savedUser)
-            setUser(parsed)
-            setGeneralForm(parsed)
-            setToken(savedToken)
+        if (authUser) {
+            setUser(authUser)
+            setGeneralForm(authUser)
         }
-
         getPincodes().then(setPincodes).catch(console.error)
-    }, [])
+    }, [authUser])
 
     useEffect(() => {
-        if (!token) return
+        if (!authUser || authLoading) return
 
         if (activeTab === "addresses") {
             setLoading(true)
-            getAddresses(token)
+            getAddresses()
                 .then(setAddresses)
                 .catch(err => console.error("Failed to load addresses"))
                 .finally(() => setLoading(false))
         } else if (activeTab === "orders") {
             setLoading(true)
-            getOrders(token)
+            getOrders()
                 .then(setOrders)
                 .catch(err => console.error("Failed to load orders"))
                 .finally(() => setLoading(false))
         }
-    }, [activeTab, token])
+    }, [activeTab, authUser, authLoading])
 
     const handleGeneralSave = () => {
         const updatedUser = { ...user, ...generalForm }
         setUser(updatedUser)
+        // Note: Ideally we should update this via an API and then update AuthContext
         localStorage.setItem("user", JSON.stringify(updatedUser))
         setIsEditingGeneral(false)
     }
@@ -104,20 +102,21 @@ export function Profile() {
             return
         }
         try {
-            await addAddress(token, {
+            await addAddress({
                 ...newAddress,
                 pincode_id: parseInt(newAddress.pincode_id)
             })
             setShowAddAddress(false)
             setNewAddress({ address_line: "", landmark: "", pincode_id: "", is_default: false })
-            const updated = await getAddresses(token)
+            const updated = await getAddresses()
             setAddresses(updated)
         } catch (err) {
             alert("Failed to add address")
         }
     }
 
-    if (!user) return <div className="p-8 text-center">Please login to view profile</div>
+    if (authLoading) return <div className="p-8 text-center">Loading...</div>
+    if (!authUser) return <div className="p-8 text-center">Please login to view profile</div>
 
     return (
         <div className="container mx-auto px-4 py-8 max-w-5xl">
@@ -178,11 +177,16 @@ export function Profile() {
                                         <CardTitle className="text-xl">General Details</CardTitle>
                                         <CardDescription>Manage your basic account information</CardDescription>
                                     </div>
-                                    {!isEditingGeneral && (
-                                        <Button variant="outline" size="sm" onClick={() => setIsEditingGeneral(true)}>
-                                            <Edit2 className="h-4 w-4 mr-2" /> Edit
+                                    <div className="flex gap-2">
+                                        <Button variant="outline" size="sm" onClick={() => navigate("/change-password")}>
+                                            <Lock className="h-4 w-4 mr-2" /> Change Password
                                         </Button>
-                                    )}
+                                        {!isEditingGeneral && (
+                                            <Button variant="outline" size="sm" onClick={() => setIsEditingGeneral(true)}>
+                                                <Edit2 className="h-4 w-4 mr-2" /> Edit
+                                            </Button>
+                                        )}
+                                    </div>
                                 </CardHeader>
                                 <CardContent className="space-y-6">
                                     <div className="grid gap-6 md:grid-cols-2">

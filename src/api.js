@@ -109,6 +109,12 @@ export async function syncCartApi(items) {
     });
 }
 
+export async function clearCartApi() {
+    return fetchWithAuth("/cart/", {
+        method: "DELETE",
+    });
+}
+
 export async function getAddresses() {
     return fetchWithAuth("/users/me/addresses");
 }
@@ -122,6 +128,13 @@ export async function addAddress(addressData) {
 
 export async function getOrders() {
     return fetchWithAuth("/users/me/orders");
+}
+
+export async function placeOrderApi(orderData) {
+    return fetchWithAuth("/cart/place-order", {
+        method: "POST",
+        body: JSON.stringify(orderData),
+    });
 }
 
 export async function getPincodes() {

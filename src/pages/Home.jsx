@@ -4,12 +4,15 @@ import { CategoryStrip } from '../components/CategoryStrip'
 import { ProductSection } from '../components/ProductSection'
 import { Footer } from '../components/Footer'
 import { getProducts } from '../api'
+import { useCart } from '../context/CartContext'
 
 export default function Home({ location }) {
     const [products, setProducts] = useState([])
     const [loading, setLoading] = useState(true)
+    const { refreshCart } = useCart()
 
     useEffect(() => {
+        refreshCart() // Sync cart when on home page
         getProducts()
             .then(data => {
                 // Get 20-30 products (e.g., slice 0 to 24)
@@ -17,7 +20,7 @@ export default function Home({ location }) {
             })
             .catch(err => console.error("Failed to load products", err))
             .finally(() => setLoading(false))
-    }, [])
+    }, [refreshCart])
 
     return (
         <div className="min-h-screen bg-white">
