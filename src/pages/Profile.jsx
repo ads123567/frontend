@@ -338,8 +338,41 @@ export function Profile() {
                                                 <CardDescription>{new Date(order.created_at).toLocaleDateString()}</CardDescription>
                                             </CardHeader>
                                             <CardContent className="p-4 pt-2">
-                                                <p className="font-bold">Total: ₹{order.total_amount}</p>
-                                                <p className="text-sm text-gray-500">{order.items?.length || 0} items</p>
+                                                <div className="flex justify-between items-center">
+                                                    <div>
+                                                        <p className="font-bold">Total: ₹{order.total_amount}</p>
+                                                        <p className="text-sm text-gray-500">{order.items?.length || 0} items</p>
+                                                    </div>
+                                                    <div className="flex gap-2">
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
+                                                            onClick={() => navigate(`/order-details/${order.id}`)}
+                                                        >
+                                                            More Details
+                                                        </Button>
+                                                        {order.status !== "cancelled" && order.status !== "delivered" && (
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="sm"
+                                                                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                                                onClick={async () => {
+                                                                    if (confirm("Are you sure you want to cancel this order?")) {
+                                                                        try {
+                                                                            await (await import("@/api")).cancelOrderApi(order.id)
+                                                                            const updated = await getOrders()
+                                                                            setOrders(updated)
+                                                                        } catch (err) {
+                                                                            alert("Failed to cancel order")
+                                                                        }
+                                                                    }
+                                                                }}
+                                                            >
+                                                                Cancel
+                                                            </Button>
+                                                        )}
+                                                    </div>
+                                                </div>
                                             </CardContent>
                                         </Card>
                                     ))}

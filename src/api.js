@@ -137,6 +137,16 @@ export async function placeOrderApi(orderData) {
     });
 }
 
+export async function getOrderDetailsApi(orderId) {
+    return fetchWithAuth(`/users/me/orders/${orderId}`);
+}
+
+export async function cancelOrderApi(orderId) {
+    return fetchWithAuth(`/users/me/orders/${orderId}/cancel`, {
+        method: "POST",
+    });
+}
+
 export async function getPincodes() {
     return fetchWithAuth("/stores/pincodes");
 }

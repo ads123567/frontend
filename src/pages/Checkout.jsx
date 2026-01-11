@@ -43,7 +43,8 @@ export function Checkout() {
     }
 
     const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0)
-    const deliveryFee = total > 500 ? 0 : 40
+    const totalQuantity = cart.reduce((acc, item) => acc + item.quantity, 0)
+    const deliveryFee = 0 // Forced free delivery as requested
 
     const handlePlaceOrder = async () => {
         if (!selectedAddressId) {
@@ -51,11 +52,20 @@ export function Checkout() {
             return
         }
 
+        const selectedAddress = addresses.find(a => a.id === selectedAddressId)
+        const savedStore = localStorage.getItem("selectedStore")
+        const storeObj = savedStore ? JSON.parse(savedStore) : { id: 1 }
+
         setLoading(true)
         try {
             const orderData = {
                 address_id: selectedAddressId,
-                payment_method: "cod"
+                user_id: user.id,
+                quantity: totalQuantity,
+                store_id: storeObj.id,
+                pincode_id: selectedAddress.pincode_id,
+                payment_method: "cod",
+                items: cart.map(item => ({ product_id: item.id, quantity: item.quantity }))
             }
             const res = await placeOrderApi(orderData)
             setPlacedOrder(res)
@@ -125,8 +135,8 @@ export function Checkout() {
                                             key={addr.id}
                                             onClick={() => setSelectedAddressId(addr.id)}
                                             className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${selectedAddressId === addr.id
-                                                    ? "border-medical-teal-600 bg-medical-teal-50"
-                                                    : "border-gray-100 hover:border-gray-200 bg-white"
+                                                ? "border-medical-teal-600 bg-medical-teal-50"
+                                                : "border-gray-100 hover:border-gray-200 bg-white"
                                                 }`}
                                         >
                                             <div className="flex justify-between items-start">
@@ -192,6 +202,10 @@ export function Checkout() {
                                     <span className={deliveryFee === 0 ? "text-green-600 font-medium" : ""}>
                                         {deliveryFee === 0 ? "FREE" : `₹${deliveryFee}`}
                                     </span>
+                                </div>
+                                <div className="flex justify-between text-xs text-medical-teal-600 font-medium">
+                                    <span>Delivery Time</span>
+                                    <span>Next Day</span>
                                 </div>
                                 <div className="flex justify-between font-bold text-lg pt-2 border-t text-gray-900">
                                     <span>Total</span>

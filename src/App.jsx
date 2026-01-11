@@ -10,6 +10,7 @@ import ProtectedRoute from './components/ProtectedRoute'
 import CreateUser from './pages/admin/CreateUser'
 import ResetPassword from './pages/admin/ResetPassword'
 import ChangePassword from './pages/ChangePassword'
+import OrderDetails from './pages/OrderDetails'
 import { Toaster, toast } from 'sonner'
 
 // Pages
@@ -119,6 +120,14 @@ function AppContent() {
                 {" "}
                 {/* Fixed whitespace */}
                 <Profile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/order-details/:orderId"
+            element={
+              <ProtectedRoute>
+                <OrderDetails />
               </ProtectedRoute>
             }
           />
