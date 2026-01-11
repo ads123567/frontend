@@ -150,6 +150,13 @@ export function Navbar({ location, onLocationClick, onCartClick }) {
                             {cartTotal > 0 && <span className="font-bold">₹{cartTotal.toFixed(0)}</span>}
                         </div>
                     </Button>
+                {user?.role === 'admin' &&
+                    <Link to="/admin/dashboard">
+                            <Button variant="ghost" className="hidden sm:flex text-gray-600 hover:text-medical-teal-600">
+                                 Admin Order Panel
+                            </Button>
+                        </Link>
+                }
                 </div>
             </div>
 

@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom'
+// 1. Import QueryClient and Provider
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+
 import { CartProvider } from './context/CartContext'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { CartDrawer } from './components/CartDrawer'
@@ -12,6 +15,7 @@ import ResetPassword from './pages/admin/ResetPassword'
 import ChangePassword from './pages/ChangePassword'
 import OrderDetails from './pages/OrderDetails'
 import { Toaster, toast } from 'sonner'
+import AdminDashboard from './pages/admin/AdminDashboard'
 
 // Pages
 import Home from './pages/Home'
@@ -22,6 +26,9 @@ import Contact from './pages/Contact'
 // UI Components
 import { Navbar } from './components/Navbar'
 import { LocationModal } from './components/LocationModal'
+
+// 2. Create a client instance (create this outside the component so it doesn't reset on re-renders)
+const queryClient = new QueryClient()
 
 function AppContent() {
   const { user, loading } = useAuth()
@@ -37,7 +44,6 @@ function AppContent() {
       if (savedStore) {
         setLocation(JSON.parse(savedStore))
       } else {
-        // User is logged in but no store selected
         setLocationModalOpen(true)
       }
     }
@@ -49,17 +55,12 @@ function AppContent() {
     setLocationModalOpen(false)
   }
 
-  // Protected Action Handler
   const handleProtectedAction = (action) => {
     if (user) {
       action()
     } else {
-      toast.error("Please login first to continue", {
-        duration: 5000,
-      })
-      setTimeout(() => {
-        navigate("/login")
-      }, 5000)
+      toast.error("Please login first to continue", { duration: 5000 })
+      setTimeout(() => navigate("/login"), 5000)
     }
   }
 
@@ -81,56 +82,47 @@ function AppContent() {
 
           {/* Admin Routes */}
           <Route path="/admin/create-user" element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={['admin']}>
               <CreateUser />
             </ProtectedRoute>
           } />
           <Route path="/admin/reset-password" element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={['admin']}>
               <ResetPassword />
             </ProtectedRoute>
           } />
+          <Route path="/admin/dashboard" element={
+            <ProtectedRoute allowedRoles={['admin']}>
+              <AdminDashboard />
+            </ProtectedRoute>
+          } />
 
-          {/* Protected Routes */}
+          {/* User Routes */}
           <Route path="/change-password" element={
             <ProtectedRoute>
               <ChangePassword />
             </ProtectedRoute>
           } />
-          <Route
-            path="/"
-            element={
-              <ProtectedRoute>
-                <Home location={location} />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/checkout"
-            element={
-              <ProtectedRoute>
-                <Checkout />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/profile"
-            element={
-              <ProtectedRoute>
-                {" "}
-                {/* Fixed whitespace */}
-                <Profile />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/order-details/:orderId"
-            element={
-              <ProtectedRoute>
-                <OrderDetails />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/" element={
+            <ProtectedRoute>
+              <Home location={location} />
+            </ProtectedRoute>
+          } />
+          <Route path="/checkout" element={
+            <ProtectedRoute>
+              <Checkout />
+            </ProtectedRoute>
+          } />
+          <Route path="/profile" element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          } />
+          <Route path="/order-details/:orderId" element={
+            <ProtectedRoute>
+              <OrderDetails />
+            </ProtectedRoute>
+          } />
         </Routes>
       </main>
 
@@ -152,13 +144,16 @@ function AppContent() {
 
 function App() {
   return (
-    <AuthProvider>
-      <CartProvider>
-        <Router>
-          <AppContent />
-        </Router>
-      </CartProvider>
-    </AuthProvider>
+    // 3. Wrap the application with QueryClientProvider
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <CartProvider>
+          <Router>
+            <AppContent />
+          </Router>
+        </CartProvider>
+      </AuthProvider>
+    </QueryClientProvider>
   )
 }
 
