@@ -1,4 +1,4 @@
-import { Search, ShoppingCart, User, ChevronDown, MapPin, LogOut, UserCircle, Package, HelpCircle, Map } from "lucide-react"
+import { Search, ShoppingCart, User, ChevronDown, MapPin, LogOut, UserCircle, Package, HelpCircle, Map, Settings, Store } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useCart } from "@/context/CartContext"
@@ -85,9 +85,11 @@ export function Navbar({ location, onLocationClick, onCartClick }) {
                                     </div>
                                 </DropdownMenuLabel>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem onClick={() => navigate("/profile?tab=profile")}>
+
+                                {/* User Menu Items */}
+                                <DropdownMenuItem onClick={() => navigate("/profile")}>
                                     <UserCircle className="mr-2 h-4 w-4" />
-                                    <span>Edit Profile</span>
+                                    <span>Profile Management</span>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem onClick={() => navigate("/profile?tab=orders")}>
                                     <Package className="mr-2 h-4 w-4" />
@@ -97,28 +99,30 @@ export function Navbar({ location, onLocationClick, onCartClick }) {
                                     <MapPin className="mr-2 h-4 w-4" />
                                     <span>Addresses</span>
                                 </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+
+                                {/* Admin Section */}
+                                {user?.role === 'admin' && (
+                                    <>
+                                        <DropdownMenuLabel className="text-xs font-semibold text-gray-500 uppercase">Admin</DropdownMenuLabel>
+                                        <DropdownMenuItem onClick={() => navigate("/admin/dashboard")}>
+                                            <Package className="mr-2 h-4 w-4" />
+                                            <span>Order Panel</span>
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem onClick={() => navigate("/admin/store-management")}>
+                                            <Store className="mr-2 h-4 w-4" />
+                                            <span>Store & Product Management</span>
+                                        </DropdownMenuItem>
+                                        <DropdownMenuSeparator />
+                                    </>
+                                )}
+
+                                {/* Help & Logout */}
                                 <DropdownMenuItem>
                                     <HelpCircle className="mr-2 h-4 w-4" />
                                     <span>Help Center</span>
                                 </DropdownMenuItem>
-                                {user?.role === 'admin' && (
-                                    <>
-                                        <DropdownMenuSeparator />
-                                        <DropdownMenuItem onClick={() => navigate("/admin/create-user")}>
-                                            <UserCircle className="mr-2 h-4 w-4" />
-                                            <span>Create User Account</span>
-                                        </DropdownMenuItem>
-                                        <DropdownMenuItem onClick={() => navigate("/admin/reset-password")}>
-                                            <UserCircle className="mr-2 h-4 w-4" />
-                                            <span>Reset User Password</span>
-                                        </DropdownMenuItem>
-                                    </>
-                                )}
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem onClick={() => navigate("/change-password")}>
-                                    <UserCircle className="mr-2 h-4 w-4" />
-                                    <span>Change Password</span>
-                                </DropdownMenuItem>
                                 <DropdownMenuItem onClick={handleLogout} className="text-red-600">
                                     <LogOut className="mr-2 h-4 w-4" />
                                     <span>Logout</span>
