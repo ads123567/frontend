@@ -16,6 +16,7 @@ import ChangePassword from './pages/ChangePassword'
 import OrderDetails from './pages/OrderDetails'
 import { Toaster, toast } from 'sonner'
 import AdminDashboard from './pages/admin/AdminDashboard'
+import StoreManagement from './pages/admin/StoreManagement'
 
 // Pages
 import Home from './pages/Home'
@@ -94,6 +95,12 @@ function AppContent() {
           <Route path="/admin/dashboard" element={
             <ProtectedRoute allowedRoles={['admin']}>
               <AdminDashboard />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/admin/store-management" element={
+            <ProtectedRoute allowedRoles={['admin']}>
+              <StoreManagement />
             </ProtectedRoute>
           } />
 

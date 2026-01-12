@@ -5,9 +5,11 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
-import { User, Store, FileText, Phone, Mail, Edit2, MapPin, Package, Plus, HelpCircle, LogOut, Lock } from "lucide-react"
+import { User, Store, FileText, Phone, Mail, Edit2, MapPin, Package, Plus, HelpCircle, LogOut, Lock, Settings, Shield } from "lucide-react"
 import { getAddresses, addAddress, getOrders, getPincodes } from "@/api"
 import { useAuth } from "@/context/AuthContext"
+import CreateUser from "./admin/CreateUser"
+import ResetPassword from "./admin/ResetPassword"
 
 export function Profile() {
     const [searchParams] = useSearchParams()
@@ -155,7 +157,7 @@ export function Profile() {
                     </Button>
                     <Button
                         variant="ghost"
-                        className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
+                        className="w-full justify-start text-red-600 hover:text-red-cc700 hover:bg-red-50"
                         onClick={() => {
                             localStorage.removeItem("user")
                             localStorage.removeItem("token")
@@ -168,6 +170,35 @@ export function Profile() {
 
                 {/* Content Area */}
                 <div className="flex-1">
+                    {/* Top Tabs Navigation */}
+                    <div className="flex gap-2 mb-8 border-b">
+                        <Button
+                            variant={activeTab === "profile" ? "default" : "ghost"}
+                            className={`px-6 py-2 border-b-2 rounded-none ${activeTab === "profile" ? "bg-transparent border-medical-teal-600 text-medical-teal-600 font-semibold" : "border-transparent text-gray-600"}`}
+                            onClick={() => setActiveTab("profile")}
+                        >
+                            <User className="mr-2 h-4 w-4" /> Profile Details
+                        </Button>
+                        {authUser?.role === 'admin' && (
+                            <>
+                                <Button
+                                    variant={activeTab === "create-user" ? "default" : "ghost"}
+                                    className={`px-6 py-2 border-b-2 rounded-none ${activeTab === "create-user" ? "bg-transparent border-medical-teal-600 text-medical-teal-600 font-semibold" : "border-transparent text-gray-600"}`}
+                                    onClick={() => setActiveTab("create-user")}
+                                >
+                                    <Plus className="mr-2 h-4 w-4" /> Create Users Account
+                                </Button>
+                                <Button
+                                    variant={activeTab === "reset-password" ? "default" : "ghost"}
+                                    className={`px-6 py-2 border-b-2 rounded-none ${activeTab === "reset-password" ? "bg-transparent border-medical-teal-600 text-medical-teal-600 font-semibold" : "border-transparent text-gray-600"}`}
+                                    onClick={() => setActiveTab("reset-password")}
+                                >
+                                    <Lock className="mr-2 h-4 w-4" /> Reset Users Password
+                                </Button>
+                            </>
+                        )}
+                    </div>
+
                     {activeTab === "profile" && (
                         <div className="space-y-6">
                             {/* General Details Section */}
@@ -195,7 +226,7 @@ export function Profile() {
                                             <div className="relative">
                                                 <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                                                 <Input
-                                                    value={isEditingGeneral ? generalForm.name : user.name}
+                                                    value={isEditingGeneral ? generalForm.name : user?.name}
                                                     onChange={(e) => setGeneralForm({ ...generalForm, name: e.target.value })}
                                                     disabled={!isEditingGeneral}
                                                     className="pl-9"
@@ -207,7 +238,7 @@ export function Profile() {
                                             <div className="relative">
                                                 <Store className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                                                 <Input
-                                                    value={isEditingGeneral ? generalForm.shop_name : user.shop_name}
+                                                    value={isEditingGeneral ? generalForm.shop_name : user?.shop_name}
                                                     onChange={(e) => setGeneralForm({ ...generalForm, shop_name: e.target.value })}
                                                     disabled={!isEditingGeneral}
                                                     className="pl-9"
@@ -219,7 +250,7 @@ export function Profile() {
                                             <div className="relative">
                                                 <FileText className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                                                 <Input
-                                                    value={isEditingGeneral ? generalForm.gstnum : user.gstnum}
+                                                    value={isEditingGeneral ? generalForm.gstnum : user?.gstnum}
                                                     onChange={(e) => setGeneralForm({ ...generalForm, gstnum: e.target.value })}
                                                     disabled={!isEditingGeneral}
                                                     className="pl-9"
@@ -255,7 +286,7 @@ export function Profile() {
                                                 </div>
                                                 <div>
                                                     <p className="text-sm font-medium text-gray-500">Phone Number</p>
-                                                    <p className="font-semibold">{user.phone}</p>
+                                                    <p className="font-semibold">{user?.phone}</p>
                                                 </div>
                                             </div>
                                             <Button variant="ghost" className="text-medical-teal-600 hover:text-medical-teal-700 hover:bg-medical-teal-50" onClick={() => setSensitiveEditType('phone')}>
@@ -270,7 +301,7 @@ export function Profile() {
                                                 </div>
                                                 <div>
                                                     <p className="text-sm font-medium text-gray-500">Email Address</p>
-                                                    <p className="font-semibold">{user.email || "Not set"}</p>
+                                                    <p className="font-semibold">{user?.email || "Not set"}</p>
                                                 </div>
                                             </div>
                                             <Button variant="ghost" className="text-medical-teal-600 hover:text-medical-teal-700 hover:bg-medical-teal-50" onClick={() => setSensitiveEditType('email')}>
@@ -379,6 +410,14 @@ export function Profile() {
                                 </div>
                             )}
                         </div>
+                    )}
+
+                    {activeTab === "create-user" && authUser?.role === 'admin' && (
+                        <CreateUser />
+                    )}
+
+                    {activeTab === "reset-password" && authUser?.role === 'admin' && (
+                        <ResetPassword />
                     )}
                 </div>
             </div>
