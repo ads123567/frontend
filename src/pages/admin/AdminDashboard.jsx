@@ -87,7 +87,7 @@ const AdminDashboard = () => {
                 {/* Optional: Add a red dot if you fetch counts separately */}
                 {/* <span className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-red-500" /> */}
             </TabsTrigger>
-            <TabsTrigger value="placed">Confirmed</TabsTrigger>
+            <TabsTrigger value="confirmed">Confirmed</TabsTrigger>
             </TabsList>
         </div>
 

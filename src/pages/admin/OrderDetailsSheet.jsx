@@ -20,7 +20,7 @@ const OrderDetailsSheet = ({ order, open, onOpenChange }) => {
         <SheetHeader className="mb-6">
           <div className="flex items-center justify-between">
             <SheetTitle>Order #{order.id}</SheetTitle>
-            <Badge variant={order.status === 'placed' ? 'success' : 'secondary'}>
+            <Badge variant={order.status === 'confirmed' ? 'success' : 'secondary'}>
               {order.status.replace('_', ' ').toUpperCase()}
             </Badge>
           </div>
