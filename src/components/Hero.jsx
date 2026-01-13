@@ -4,10 +4,10 @@ import { ArrowRight } from "lucide-react"
 
 export function Hero() {
     return (
-        <div className="bg-gradient-to-b from-medical-teal-50 to-white pb-8 pt-6">
-            <div className="container mx-auto px-4">
+        <div className=" from-medical-teal-50 to-white pb-1 pt-2">
+            <div className="container mx-auto px-1">
                 {/* Hero Main */}
-                <div className="flex flex-col md:flex-row items-center justify-between bg-medical-teal-600 rounded-2xl p-8 md:p-12 text-white shadow-lg overflow-hidden relative mb-10">
+                <div className="flex flex-col md:flex-row items-center justify-between bg-medical-teal-600 rounded-2xl p-8 md:p-12 text-white shadow-lg overflow-hidden relative mb-2">
                     {/* Decorative Circles */}
                     <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-medical-teal-500 opacity-50 blur-3xl" />
                     <div className="absolute bottom-0 left-0 -ml-16 -mb-16 w-48 h-48 rounded-full bg-medical-teal-400 opacity-30 blur-2xl" />
@@ -17,7 +17,7 @@ export function Hero() {
                             B2B Medical Supply <br /> Wholesale Rates
                         </h1>
                         <p className="text-medical-teal-50 text-lg">
-                            Bulk orders for Retailers, Hospitals & Clinics. 1-Day Delivery Guaranteed.
+                            Bulk orders for Retailers, Hospitals & Clinics. 1-Day Delivery expected.
                         </p>
                         <div className="flex flex-wrap gap-3">
                             <Button size="lg" className="bg-white text-medical-teal-700 hover:bg-gray-100 font-semibold h-12 px-8">
@@ -34,14 +34,14 @@ export function Hero() {
                         <div className="w-80 h-64 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20 flex items-center justify-center">
                             <div className="text-center">
                                 <span className="text-6xl">💊</span>
-                                <p className="mt-4 font-medium text-white/80">Pharmacy at your doorstep</p>
+                                <p className="mt-4 font-medium text-white/80">Pharmacy at your Shop</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 {/* Promo Banners */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {BANNERS.map((banner) => (
                         <div
                             key={banner.id}
@@ -61,7 +61,7 @@ export function Hero() {
                             </div>
                         </div>
                     ))}
-                </div>
+                </div> */}
             </div>
         </div>
     )

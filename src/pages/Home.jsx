@@ -25,8 +25,7 @@ export default function Home({ location }) {
     return (
         <div className="min-h-screen bg-white">
             <Hero />
-            <CategoryStrip />
-
+            {/* <CategoryStrip /> */}
             {loading ? (
                 <div className="p-8 text-center">Loading products...</div>
             ) : (

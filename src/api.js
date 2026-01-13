@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:8000";
+const API_URL = "http://localhost:8080";
 
 export async function checkPincode(pincode) {
     return fetchWithAuth(`/stores/by-pincode/${pincode}`);
