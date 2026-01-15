@@ -14,6 +14,7 @@ import CreateUser from './pages/admin/CreateUser'
 import ResetPassword from './pages/admin/ResetPassword'
 import ChangePassword from './pages/ChangePassword'
 import OrderDetails from './pages/OrderDetails'
+import ProductDetails from './pages/ProductDetails'
 import { Toaster, toast } from 'sonner'
 import AdminDashboard from './pages/admin/AdminDashboard'
 import StoreManagement from './pages/admin/StoreManagement'
@@ -128,6 +129,11 @@ function AppContent() {
           <Route path="/order-details/:orderId" element={
             <ProtectedRoute>
               <OrderDetails />
+            </ProtectedRoute>
+          } />
+          <Route path="/product/:productId" element={
+            <ProtectedRoute>
+              <ProductDetails />
             </ProtectedRoute>
           } />
         </Routes>

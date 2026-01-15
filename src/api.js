@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:8080";
+const API_URL = "http://localhost:8000";
 
 export async function checkPincode(pincode) {
     return fetchWithAuth(`/stores/by-pincode/${pincode}`);
@@ -15,6 +15,10 @@ export async function getProducts(storeId, categoryId, search) {
     if (search) params.append("search", search);
 
     return fetchWithAuth(`/products/?${params.toString()}`);
+}
+
+export async function getProduct(productId) {
+    return fetchWithAuth(`/products/${productId}`);
 }
 
 // Helper for fetch with credentials

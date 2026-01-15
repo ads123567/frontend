@@ -2,6 +2,7 @@ import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useCart } from "@/context/CartContext"
 import { Minus, Plus } from "lucide-react"
+import { Link } from "react-router-dom"
 
 export function ProductCard({ product }) {
     const { cart, addToCart, updateQuantity, removeFromCart } = useCart()
@@ -24,58 +25,59 @@ export function ProductCard({ product }) {
     return (
         /* Increased card length/height via min-height and padding */
         <Card className="group flex flex-col min-h-[350px] bg-white border border-gray-100 hover:shadow-md transition-shadow duration-300 rounded-2xl overflow-hidden w-full p-3">
-
-            {/* Top Labels */}
-            <div className="flex justify-between items-center mb-2">
-                <span className="text-[12px] font-bold text-gray-500 uppercase tracking-tight">
-                    {product.brand || "GENERIC"}
-                </span>
-                {discount > 0 && (
-                    <div className="text-red-600 text-[13px] font-black">
-                        {discount}% OFF
-                    </div>
-                )}
-            </div>
-
-            {/* Image Container - Slightly taller to match card length */}
-            <div className="relative h-32 w-full flex items-center justify-center mb-3">
-                <img
-                    src={product.image || product.image_url}
-                    alt={product.name}
-                    className="max-h-full max-w-[85%] object-contain"
-                />
-            </div>
-
-            {/* Name Section - More space allocated here */}
-            <div className="flex flex-col mb-1 min-h-[2.5rem]">
-                {/* min-height helps keep cards aligned if names vary in length */}
-                <h3 className="text-base font-bold text-gray-900 line-clamp-3 leading-snug break-words">
-                    {product.name}
-                </h3>
-            </div>
-
-            {/* Price & Unit Grid */}
-            <div className=" mt-auto">
-                {/* MRP Row */}
-                <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-1">
-                        <span className="text-xs font-bold text-gray-500">MRP: </span>
-                        <span className="text-sm text-gray-400 line-through font-medium">₹{mrp.toFixed(2)}</span>
-                        <span className="text-[10px] text-gray-400 italic">incl. GST</span>
-                    </div>
-                    <span className="text-[11px] font-bold text-gray-500 uppercase">Unit</span>
+            <Link to={`/product/${product.id}`} className="flex flex-col flex-1">
+                {/* Top Labels */}
+                <div className="flex justify-between items-center mb-2">
+                    <span className="text-[12px] font-bold text-gray-500 uppercase tracking-tight">
+                        {product.brand || "GENERIC"}
+                    </span>
+                    {discount > 0 && (
+                        <div className="text-red-600 text-[13px] font-black">
+                            {discount}% OFF
+                        </div>
+                    )}
                 </div>
 
-                {/* PTR Row */}
-                <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-1">
-                        <span className="text-xs font-bold text-gray-500">PTR: </span>
-                        <span className="text-sm text-gray-400 line-through font-medium">₹{ptr.toFixed(2)}</span>
-                        <span className="text-[10px] text-gray-400 italic">incl. GST</span>
-                    </div>
-                    <span className="text-[11px] font-bold text-gray-500">{product.size_label || "10 * 10"}</span>
+                {/* Image Container - Slightly taller to match card length */}
+                <div className="relative h-32 w-full flex items-center justify-center mb-3">
+                    <img
+                        src={product.image || product.image_url}
+                        alt={product.name}
+                        className="max-h-full max-w-[85%] object-contain"
+                    />
                 </div>
-            </div>
+
+                {/* Name Section - More space allocated here */}
+                <div className="flex flex-col mb-1 min-h-[2.5rem]">
+                    {/* min-height helps keep cards aligned if names vary in length */}
+                    <h3 className="text-base font-bold text-gray-900 line-clamp-3 leading-snug break-words">
+                        {product.name}
+                    </h3>
+                </div>
+
+                {/* Price & Unit Grid */}
+                <div className=" mt-auto">
+                    {/* MRP Row */}
+                    <div className="flex justify-between items-center">
+                        <div className="flex items-center gap-1">
+                            <span className="text-xs font-bold text-gray-500">MRP: </span>
+                            <span className="text-sm text-gray-400 line-through font-medium">₹{mrp.toFixed(2)}</span>
+                            <span className="text-[10px] text-gray-400 italic">incl. GST</span>
+                        </div>
+                        <span className="text-[11px] font-bold text-gray-500 uppercase">Unit</span>
+                    </div>
+
+                    {/* PTR Row */}
+                    <div className="flex justify-between items-center">
+                        <div className="flex items-center gap-1">
+                            <span className="text-xs font-bold text-gray-500">PTR: </span>
+                            <span className="text-sm text-gray-400 line-through font-medium">₹{ptr.toFixed(2)}</span>
+                            <span className="text-[10px] text-gray-400 italic">incl. GST</span>
+                        </div>
+                        <span className="text-[11px] font-bold text-gray-500">{product.size_label || "10 * 10"}</span>
+                    </div>
+                </div>
+            </Link>
 
             {/* Bottom Section - Price and Button in same row */}
             {/* Bottom Section - Price and Button stack on mobile, side-by-side on desktop */}

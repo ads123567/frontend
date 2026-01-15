@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Replace with your actual backend URL
-const BASE_URL = 'http://localhost:8000'; 
+const BASE_URL = 'http://localhost:8000';
 
 const api = axios.create({
   baseURL: BASE_URL,
@@ -30,9 +30,9 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-        // Handle unauthorized (e.g., redirect to login)
-        console.error("Unauthorized! Redirecting...");
-        // window.location.href = '/login'; 
+      // Handle unauthorized (e.g., redirect to login)
+      console.error("Unauthorized! Redirecting...");
+      // window.location.href = '/login'; 
     }
     return Promise.reject(error);
   }
